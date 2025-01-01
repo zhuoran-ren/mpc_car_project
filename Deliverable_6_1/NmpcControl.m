@@ -62,7 +62,7 @@ classdef NmpcControl < handle
 
             for k =1:N
                 cost = cost + obj.U(1,k)*obj.U(1,k)';
-                cost = cost + obj.U(2,k)*obj.U(2,k)';
+                cost = cost + 2*obj.U(2,k)*obj.U(2,k)';
                 cost = cost + 1*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
                 cost = cost + (obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
             end
@@ -80,15 +80,9 @@ classdef NmpcControl < handle
 
             end
 
-            
-            epsilon = 0;  % Small margin to avoid division by zero
-            H = diag([1/(car.length+2)^2, 1/(car.width+1)^2]);  % Collision avoidance matrix
-            for k = 1:N
-                disp((obj.X(1:2,k+1) - obj.x0other(1:2))' * H * (obj.X(1:2,k+1) - obj.x0other(1:2)))
-                opti.subject_to((obj.X(1:2,k+1) - obj.x0other(1:2))' * H * (obj.X(1:2,k+1) - obj.x0other(1:2)) >= 1);  % Collision avoidance constraint
-            end
+            opti.minimize(cost)
 
-            opti.minimize(cost) 
+
             % Store the defined problem to solve in get_u
             obj.opti = opti;
 
