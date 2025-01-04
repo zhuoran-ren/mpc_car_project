@@ -61,10 +61,9 @@ classdef NmpcControl < handle
             cost = 0;
 
             for k =1:N
-                cost = cost + obj.U(1,k)*obj.U(1,k)';
-                cost = cost + 2*obj.U(2,k)*obj.U(2,k)';
-                cost = cost + 1*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
-                cost = cost + (obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
+                cost = cost + 10*obj.U(1,k)^2 + 0.8*obj.U(2,k)^2;
+                cost = cost + 0.03*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
+                cost = cost + 3*(obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
             end
             
             % change this line accordingly
@@ -75,7 +74,7 @@ classdef NmpcControl < handle
                 opti.subject_to(obj.X(:,k+1) == fd(obj.X(:,k),obj.U(:,k)));
                 opti.subject_to(-0.5<=obj.X(2,k)<=3.5);
                 opti.subject_to(-0.0873<=obj.X(3,k)<=0.0873);
-                opti.subject_to(-0.99<=obj.U(2,k)<=0.99);
+                opti.subject_to(-0.9999<=obj.U(2,k)<=0.9999);
                 opti.subject_to(-0.5236<=obj.U(1,k)<=0.5236);
 
             end

@@ -50,7 +50,7 @@ classdef NmpcControl < handle
             % SET THIS VALUE TO BE YOUR CONTROL INPUT
             obj.u0 = opti.variable(nu, 1);
 
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             fd = @(x,u) RK4(x,u,car.Ts,@car.f);
             obj.X = opti.variable(nx, N+1); % State trajectory
@@ -61,8 +61,8 @@ classdef NmpcControl < handle
             cost = 0;
 
             for k =1:N
-                cost = cost + 10*obj.U(1,k)+ 0.2*obj.U(2,k)^2;
-                cost = cost + (obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
+                cost = cost + obj.U(1,k)+ 0.05*obj.U(2,k)^2;
+                cost = cost + 3*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
                 cost = cost + (obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
             end
             
