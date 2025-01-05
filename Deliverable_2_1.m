@@ -87,7 +87,7 @@ A_numeric = subs(A_cleaned, [Vs, u_Ts], [Vs_value, u_Ts_value]);
 B_numeric = subs(B_cleaned, [Vs, u_Ts], [Vs_value, u_Ts_value]);
 fs_numeric = subs(fs_cleaned, [Vs, u_Ts], [Vs_value, u_Ts_value]);
 
-% Rounding to 4 decimal places using vpa
+% Rounding to 6 significant digits using vpa
 A_numeric_rounded = vpa(A_numeric, 6);
 B_numeric_rounded = vpa(B_numeric, 6);
 fs_numeric_rounded = vpa(fs_numeric, 6);
