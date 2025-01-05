@@ -61,7 +61,7 @@ classdef NmpcControl < handle
             cost = 0;
 
             for k =1:N
-                cost = cost + obj.U(1,k)+ 0.05*obj.U(2,k)^2;
+                cost = cost + obj.U(1,k)^2+ 0.05*obj.U(2,k)^2;
                 cost = cost + 3*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
                 cost = cost + (obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
             end
