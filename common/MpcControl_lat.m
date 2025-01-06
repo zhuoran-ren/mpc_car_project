@@ -1,3 +1,4 @@
+
 classdef MpcControl_lat < MpcControlBase
     
     methods
@@ -12,7 +13,8 @@ classdef MpcControl_lat < MpcControlBase
             % OUTPUTS
             %   u0           - input to apply to the system
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
+            load('terminal_set.mat', 'Ff', 'ff');
+
             N_segs = ceil(mpc.H/mpc.Ts); % Horizon steps
             N = N_segs + 1;              % Last index in 1-based Matlab indexing
 
@@ -48,30 +50,10 @@ classdef MpcControl_lat < MpcControlBase
             A = mpc.A;
             B = mpc.B;
 
-            Q = 10 * eye(nx);
+            Q = 50 * eye(nx);
             R = 1 * eye(nu);
             [K, Qf, ~] = dlqr(A, B, Q, R);
             K = -K;
-
-            %Compute maximal invariant set
-            Xf = polytope([F; M*K], [(f - F * mpc.xs); (m - M * mpc.us)]);
-            [Ff_init, ff_init] = double(Xf);
-            Acl = A + B*K;
-            while 1
-                prevXf = Xf;
-                [T, t] = double(Xf);
-                preXf = polytope(T*Acl, t);
-                Xf = intersect(Xf, preXf);
-                if isequal(prevXf, Xf)
-                    break
-                end
-            end
-            [Ff, ff] = double(Xf);
-
-            % Visualizing the sets
-            % figure
-            % hold on; grid on;
-            % plot(polytope(Ff_init, ff_init), 'g'); plot(Xf, 'r');
           
             % Define optimization variables
             x = sdpvar(nx, N, 'full');
@@ -86,7 +68,7 @@ classdef MpcControl_lat < MpcControlBase
                 con = [con, M * (u(:, i) + mpc.us) <= m];
                 obj = obj + (x(:,i) - x_ref)' * Q * (x(:, i) - x_ref) + (u(:, i) - u_ref)' * R * (u(:, i) - u_ref);
             end
-            con = [con, F * (x(:, i) + mpc.xs) <= f];
+            con = [con, Ff * (x(:, i) - x_ref) <= ff];
             obj = obj + (x(:,N) - x_ref)' * Qf * (x(:, N) - x_ref);
 
 
@@ -135,7 +117,7 @@ classdef MpcControl_lat < MpcControlBase
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             % all in delta form
-            xs_ref = ref - xs;
+            xs_ref = [ref; 0] - xs;
             us_ref = pinv(B) * (eye(nx) - A) * xs_ref;
             % YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE YOUR CODE HERE
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
