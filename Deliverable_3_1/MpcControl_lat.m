@@ -21,7 +21,7 @@ classdef MpcControl_lat < MpcControlBase
 
             % Constraints of the system
             F = [1, 0; -1, 0; 0, 1; 0, -1];
-            f = [3.5; 0.5; 0.0873; 0.0873];
+            f = [3.5; 0.5; 0.0872; 0.0872];
             M = [1; -1];
             m = [0.5236; 0.5236];
 
