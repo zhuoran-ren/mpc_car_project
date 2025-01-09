@@ -1,4 +1,3 @@
-
 classdef MpcControl_lat < MpcControlBase
     
     methods
