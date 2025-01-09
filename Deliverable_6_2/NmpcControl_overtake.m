@@ -1,4 +1,4 @@
-classdef NmpcControl < handle
+classdef NmpcControl_overtake < handle
 
     properties
         % The NMPC problem
@@ -29,7 +29,7 @@ classdef NmpcControl < handle
     end
 
     methods
-        function obj = NmpcControl(car, H)
+        function obj = NmpcControl_overtake(car, H)
 
             import casadi.*
 
@@ -61,9 +61,9 @@ classdef NmpcControl < handle
             cost = 0;
 
             for k =1:N
-                cost = cost + 10*obj.U(1,k)^2 + 0.8*obj.U(2,k)^2;
-                cost = cost + 0.03*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
-                cost = cost + 3*(obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
+                cost = cost + 10*obj.U(1,k)^2 + 0.8*obj.U(2,k)^2 + ...
+                       0.03*(obj.X(2,k)-obj.ref(1))^2 + ...
+                       3*(obj.X(4,k)-obj.ref(2))^2; 
             end
             
             % change this line accordingly
@@ -73,14 +73,13 @@ classdef NmpcControl < handle
                
                 opti.subject_to(obj.X(:,k+1) == fd(obj.X(:,k),obj.U(:,k)));
                 opti.subject_to(-0.5<=obj.X(2,k)<=3.5);
-                opti.subject_to(-0.0873<=obj.X(3,k)<=0.0873);
+                opti.subject_to(-0.0872<=obj.X(3,k)<=0.0872);
                 opti.subject_to(-0.9999<=obj.U(2,k)<=0.9999);
                 opti.subject_to(-0.5236<=obj.U(1,k)<=0.5236);
 
             end
 
 
-            epsilon = 0.2;  % Small margin to avoid division by zero
             h = diag([1/(car.length+3)^2, 1/(car.width+1)^2]);  % Collision avoidance matrix
             x_other = obj.x0other(1:2);
             v_other = obj.x0other(4);
