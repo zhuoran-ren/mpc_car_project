@@ -1,34 +1,35 @@
 clc; clear; close all;
 %% 
 
-syms x y theta V real       % State Variables
-syms delta u_T real         % Control Variables
-syms Vs u_Ts real           % Steady-state Constants
+syms x y theta V real       % State variables
+syms delta u_T real         % Control variables
+syms Vs u_Ts real           % Steady-state constants
 
-% State Vector
+% State vector
 X = [x; y; theta; V];
+% Input vector
 u = [delta; u_T];
 
 %% 
 
-% Sampling Time
+% Sampling time
 Ts = 1/10;
 
-% Car Class Initialization
+% Car class initialization
 car = Car(Ts);
 
-% Dynamics Function
+% Dynamics function (system model)
 f = car.f(X, u);
 
-% Jacobians Computation
-Asym = jacobian(f, X);     % Partial Derivative of f w.r.t. X
-Bsym = jacobian(f, u);     % Partial Derivative of f w.r.t. u
+% Jacobians computation (symbolic)
+Asym = jacobian(f, X);     % Partial derivative of f w.r.t. X
+Bsym = jacobian(f, u);     % Partial derivative of f w.r.t. u
 
 % Steady-state values
 xs = [0; 0; 0; Vs];
 us = [0; u_Ts];
 
-% Substitute steady-state values into A, B, f
+% Steady-state values substitution into A, B, f
 A = subs(Asym, [X; u], [xs; us]);
 B = subs(Bsym, [X; u], [xs; us]);
 fs = subs(f, [X; u], [xs; us]);
@@ -45,7 +46,7 @@ A = simplify(A, 'Steps', 500);
 B = simplify(B, 'Steps', 500);
 fs = simplify(fs, 'Steps', 500);
 
-% Display f(xs,us), A, B
+% Displaying f(xs,us), A, B
 disp('f(xs,us):');
 disp(fs);
 disp('A:');
@@ -53,7 +54,7 @@ disp(A);
 disp('B:');
 disp(B);
 
-% Compute and simplify f_next
+% Computing and simplifying f_next
 f_next = fs + A * (X - xs) + B * (u - us);
 f_next = simplify(f_next, 'Steps', 500);
 
@@ -78,7 +79,7 @@ disp(f_next_cleaned);
 
 %% 
 
-% Numerical Evaluation
+% Numerical evaluation
 Vs_value = 120 / 3.6;
 u_Ts_value = 0.2018;
 
@@ -92,12 +93,12 @@ A_numeric_rounded = vpa(A_numeric, 6);
 B_numeric_rounded = vpa(B_numeric, 6);
 fs_numeric_rounded = vpa(fs_numeric, 6);
 
-% Display results
-disp('f(xs,us) (numeric, after substituting Vs and u_Ts):');
+% Displaying results
+disp('f(xs,us) (numeric, after substituting Vs and u_Ts numerical values):');
 disp(fs_numeric_rounded);
 
-disp('A (numeric, after substituting Vs and u_Ts):');
+disp('A (numeric, after substituting Vs and u_Ts numerical values):');
 disp(A_numeric_rounded);
 
-disp('B (numeric, after substituting Vs and u_Ts):');
+disp('B (numeric, after substituting Vs and u_Ts numerical values):');
 disp(B_numeric_rounded);
