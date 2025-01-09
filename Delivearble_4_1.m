@@ -24,7 +24,7 @@ estimator = LonEstimator(sys_lon, Ts);
 
 x0=[0 0 0 80/3.6]';%(x,y,theta,V)
 ref1=[0 80/3.6]'; %(yref, Vref)
-ref2=[3 40/3.6]'; %(yref, Vref)
+ref2=[3 50/3.6]'; %(yref, Vref)
 params= {};
 params.Tf=15;
 params.myCar.model=car;
@@ -35,6 +35,6 @@ params.myCar.est_dist0 = 0;
 
 params.myCar.x0=x0;
 params.myCar.u= @mpc.get_u;
-params.myCar.ref= car.ref_step(ref1,ref2,5);%delayreferencestepby5s
+params.myCar.ref= car.ref_step(ref1,ref2,2);%delayreferencestepby5s
 result=simulate(params);
 visualization(car,result)
