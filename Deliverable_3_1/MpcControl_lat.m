@@ -50,8 +50,8 @@ classdef MpcControl_lat < MpcControlBase
             A = mpc.A;
             B = mpc.B;
 
-            Q = 6 * eye(nx);
-            R = 6000 * eye(nu);
+            Q = 2 * eye(nx);
+            R = 20 * eye(nu);
             [K, Qf, ~] = dlqr(A, B, Q, R);
             K = -K;
 
