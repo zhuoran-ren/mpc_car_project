@@ -62,10 +62,10 @@ classdef NmpcControl_overtake < handle
 
 	        
             for k =1:N
-                cost = cost + 7000*obj.U(1,k)^2+ 11*obj.U(2,k)^2 + ...
-                            + cost + 3*obj.X(3,k)^2 + ...
-                            + 0.5*(obj.X(2,k)-obj.ref(1))^2 + ...
-                            + 3*(obj.X(4,k)-obj.ref(2))^2; 
+                cost = cost + 7000*obj.U(1,k)^2+ 11*obj.U(2,k)^2;
+                cost = cost + 3*obj.X(3,k)^2;
+                cost = cost + 0.5*(obj.X(2,k)-obj.ref(1))^2;
+                cost = cost + 3*(obj.X(4,k)-obj.ref(2))^2; 
                 
             end
             
