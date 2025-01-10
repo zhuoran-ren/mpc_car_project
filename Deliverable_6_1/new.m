@@ -61,10 +61,10 @@ classdef NmpcControl < handle
             cost = 0;
 	        
             for k =1:N
-                cost = cost + 10000*obj.U(1,k)^2+ obj.U(2,k)^2;
-                cost= cost +  400*obj.X(3,k)^2;
-                cost = cost + 2*(obj.X(2,k)-obj.ref(1))*(obj.X(2,k)-obj.ref(1))';
-                cost = cost + (obj.X(4,k)-obj.ref(2))*(obj.X(4,k)-obj.ref(2))'; 
+                cost = cost + 10000*obj.U(1,k)^2+ obj.U(2,k)^2 + ...
+                            + 400*obj.X(3,k)^2 + ...
+                            + 2*(obj.X(2,k)-obj.ref(1))^2 + ...
+                            + (obj.X(4,k)-obj.ref(2))^2; 
                 
             end
             
