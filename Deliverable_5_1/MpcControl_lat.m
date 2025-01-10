@@ -1,3 +1,4 @@
+
 classdef MpcControl_lat < MpcControlBase
     
     methods
@@ -12,7 +13,6 @@ classdef MpcControl_lat < MpcControlBase
             % OUTPUTS
             %   u0           - input to apply to the system
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            load('terminal_set.mat', 'Ff', 'ff');
 
             N_segs = ceil(mpc.H/mpc.Ts); % Horizon steps
             N = N_segs + 1;              % Last index in 1-based Matlab indexing
@@ -21,7 +21,8 @@ classdef MpcControl_lat < MpcControlBase
 
             % Constraints of the system
             F = [1, 0; -1, 0; 0, 1; 0, -1];
-            f = [3.5; 0.5; 0.0872; 0.0872];
+            f = [3.5; 0.5; 0.087; 0.087];
+            f_e = [0.6; 0.6; 0.087; 0.087];
             M = [1; -1];
             m = [0.5236; 0.5236];
 
@@ -53,6 +54,27 @@ classdef MpcControl_lat < MpcControlBase
             R = 1 * eye(nu);
             [K, Qf, ~] = dlqr(A, B, Q, R);
             K = -K;
+
+            Xf = polytope([F; M*K], [f_e; m]);
+            Acl = A + B*K;
+            while 1
+                prevXf = Xf;
+                [T, t] = double(Xf);
+                Xf_new = polytope(T*Acl, t);
+                Xf = intersect(Xf, Xf_new);
+                if isequal(prevXf, Xf)
+                    break
+                end
+            end
+
+            [Ff, ff] = double(Xf);
+
+            % % Plot the set if needed
+            % figure;
+            % plot(Xf);
+            % title('Terminal set');
+            % xlabel('x1: error-y');
+            % ylabel('x2: error-theta');
           
             % Define optimization variables
             x = sdpvar(nx, N, 'full');
