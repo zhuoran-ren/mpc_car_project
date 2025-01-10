@@ -53,7 +53,7 @@ classdef MpcControl_lon < MpcControlBase
             A = mpc.A(2, 2);
             B = mpc.B(2, 1);
 
-            Q = 2 * eye(nx - 1);
+            Q = 1 * eye(nx - 1);
             R = 2 * eye(nu);
             [~, Qf, ~] = dlqr(A, B, Q, R);
 
