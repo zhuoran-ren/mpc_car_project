@@ -1,5 +1,5 @@
+clc; clear; close all;
 addpath("common\")
-addpath("Delivearble_4_1\")
 
 Ts = 1/10;
 car = Car(Ts);
