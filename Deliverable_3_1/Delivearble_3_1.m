@@ -1,5 +1,5 @@
+clc; clear; close all;
 addpath("common\")
-addpath("Deliverable_3_1\")
 
 Ts = 1/10;
 car = Car(Ts);
@@ -14,9 +14,9 @@ sys = car.linearize(xs, us);
 % u0_lon = mpc_lon.get_u([0, 80/3.6]', 120/3.6);
 
 H_lon = 5;
-H_lat = 20;
+H_lat = 10;
+mpc_lat = MpcControl_lat(sys_lat,Ts, H_lat);
 mpc_lon = MpcControl_lon(sys_lon,Ts, H_lon);
-%mpc_lat = MpcControl_lat(sys_lat,Ts, H_lon);
 mpc= car.merge_lin_controllers(mpc_lon, mpc_lat);
 
 x0=[0 0 0 80/3.6]';%(x,y,theta,V)
