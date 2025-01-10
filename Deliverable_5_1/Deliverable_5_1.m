@@ -1,3 +1,4 @@
+clc; clear; close all;
 addpath("common\")
 addpath("Deliverable_5_1\")
 
@@ -20,9 +21,24 @@ mpc= car.merge_lin_controllers(mpc_lon, mpc_lat);
 % ref = 100/3.6;
 % [u_lon, X_lon, U_lon] = mpc_lon.get_u(x0,ref, x0other);
 
-%% Test in close loop
+%% Test in Constant Disturbance
 params= {};
-otherRef = 120/3.6;
+x0=[0 0 0 100/3.6]';%(x,y,theta,V)
+params.Tf=25;
+params.myCar.model=car;
+params.myCar.x0=x0;
+params.myCar.u= @mpc.get_u;
+params.myCar.ref= [0 120/3.6]';%delayreferencestepby5s
+
+% Something relate to lead car
+params.otherCar.model = car;
+params.otherCar.x0= [15 0 0 100/3.6]';
+params.otherCar.u = car.u_const(100/3.6);
+
+result=simulate(params);
+visualization(car,result)
+%% Test in Time-Varying Disturbance
+params= {};
 x0=[0 0 0 115/3.6]';%(x,y,theta,V)
 params.Tf=25;
 params.myCar.model=car;
@@ -32,10 +48,9 @@ params.myCar.ref= [0 120/3.6]';%delayreferencestepby5s
 
 % Something relate to lead car
 params.otherCar.model = car;
-params.otherCar.x0= [8 0 0 otherRef]';
+params.otherCar.x0= [8 0 0 120/3.6]';
 params.otherCar.u = car.u_fwd_ref();
 params.otherCar.ref = car.ref_robust();
-
 
 result=simulate(params);
 visualization(car,result)
